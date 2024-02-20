@@ -1,10 +1,12 @@
 package com.fco.microservices.mscartoes.domain;
 
+import com.fco.microservices.mscartoes.application.representation.CartaoOutput;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -38,4 +40,11 @@ public class Cartao {
                 ", limiteBasico=" + limiteBasico +
                 '}';
     }
+
+    public CartaoOutput toCartaoOutput(){
+        return new CartaoOutput(id, nome, bandeira, renda, limiteBasico);
+    }
+
+
+
 }

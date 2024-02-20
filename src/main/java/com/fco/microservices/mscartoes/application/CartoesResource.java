@@ -1,9 +1,11 @@
 package com.fco.microservices.mscartoes.application;
 
 import com.fco.microservices.mscartoes.application.representation.CartaoInput;
+import com.fco.microservices.mscartoes.application.representation.CartaoOutput;
 import com.fco.microservices.mscartoes.application.representation.CartoesPorClienteResponse;
 import com.fco.microservices.mscartoes.domain.Cartao;
 import com.fco.microservices.mscartoes.domain.ClienteCartao;
+import com.fco.microservices.mscartoes.infra.repository.CartaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +18,27 @@ import java.util.List;
 public class CartoesResource {
 
     @Autowired
+    private CartaoRepository cartaoRepository;
+
+    @Autowired
     private CartaoService cartaoService;
 
     @Autowired
     private ClienteCartaoService clienteCartaoService;
 
-    @PostMapping
-    public ResponseEntity cadastrar(@RequestBody CartaoInput cartaoInput){
+    @GetMapping("/listar")
+    public List<Cartao> listar() {
+        return cartaoRepository.findAll();
+    }
 
+    @PostMapping
+    public ResponseEntity<CartaoOutput> cadastrar(@RequestBody CartaoInput cartaoInput){
         System.out.println(cartaoInput);
+
         Cartao cartao = cartaoInput.toModel();
-        System.out.println(cartaoService.salvar(cartao));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Cartao cartaoSalvo = cartaoService.salvar(cartao);
+
+        return ResponseEntity.ok(cartaoSalvo.toCartaoOutput());
     }
 
     @GetMapping
